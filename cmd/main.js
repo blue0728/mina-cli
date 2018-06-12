@@ -12,7 +12,6 @@ program
     .option('-v, --version', '版本号')
     .option('-i, --init', '初始化项目')
     .action(function(res) {
-        console.log(res)
         notice.success('开始初始化项目')
         init()
     })
@@ -43,7 +42,10 @@ function init() {
                                     notice.error(err)
                                     return
                                 }
-                                notice.success('项目创建成功: cd ' + line + ' && npm install')
+                                notice.success('项目创建成功!: cd ' + line + ' && npm install')
+                                notice.success('1.安装: cd && npm install');
+                                notice.success('2.运行: npm run dev')
+                                notice.success('3.创建页面: npm run create')
                                 process.exit(0);
                             })
                         }
