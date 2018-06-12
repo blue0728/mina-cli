@@ -42,8 +42,8 @@ function init() {
                                     notice.error(err)
                                     return
                                 }
-                                notice.success('项目创建成功!: cd ' + line + ' && npm install')
-                                notice.success('1.安装: cd && npm install');
+                                notice.success('项目创建成功!')
+                                notice.success('1.安装: cd ' + line + ' && npm install');
                                 notice.success('2.运行: npm run dev')
                                 notice.success('3.创建页面: npm run create')
                                 process.exit(0);
