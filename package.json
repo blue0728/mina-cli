@@ -1,0 +1,27 @@
+{
+  "name": "mina-cli2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "mina": "cmd/main.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blue0728/mina-cli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blue0728/mina-cli/issues"
+  },
+  "homepage": "https://github.com/blue0728/mina-cli#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "colors": "^1.3.0",
+    "commander": "^2.15.1"
+  }
+}

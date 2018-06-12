@@ -1,4 +1,4 @@
-// src/pages/aaa/bbb/ccc.js
+
 Page({
 
     /**

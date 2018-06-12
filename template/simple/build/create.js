@@ -1,15 +1,31 @@
-//生成文件夹 以及 文件
-//xx.js xx.json xx.wxml xx.wxss
-//npm run create
+/*
+ * 生成文件夹 以及 文件
+ * npm run create
+ * example  /pages/aa/bb/cc/dd/文件名
+ * xx.js xx.json xx.wxml xx.wxss
+ */
+
+var readline = require('readline');
+var notice = require('./notice')
 var path = require('path');
 var fs = require('fs');
 var sep = path.sep; //系统目录分隔符
-var str = '/pages/aaa/bbb/ccc'
 var ext = ['js', 'json', 'wxml', 'wxss'];
+var rl = readline.createInterface(process.stdin, process.stdout);
+rl.setPrompt('输入路径(/pages/aa/bb/文件名)，输入Q退出>');
+rl.prompt();
 
-create(str, function() {
-    console.log('生成结束')
-})
+rl.on('line', (line) => {
+    if (line.trim().toUpperCase() === 'Q') {
+        process.exit(0);
+
+    } else {
+        create(line.trim(), function() {
+            notice.success('success')
+            process.exit(0);
+        })
+    }
+});
 
 //创建
 function create(dirPath, _callback) {
@@ -26,11 +42,11 @@ function create(dirPath, _callback) {
         fs.exists(dir, function(exists) {
             if (!exists) {
                 mkdir(0, dirArr, function() {
-                    console.log('文件夹【全部创建完成】');
+                    notice.success('---------文件夹【全部创建完成】')
                     writeFile(dirArr.join(sep), fileName, _callback)
                 })
             } else {
-                console.log('文件夹【已存在】');
+                notice.error('文件夹【已存在】')
                 _callback && _callback();
             }
         })
@@ -55,14 +71,14 @@ function mkdir(pos, dirArr, _callback) {
         if (!exists) {
             fs.mkdir(currentDir, function(err) {
                 if (err) {
-                    console.log('创建文件夹出错:', err)
+                    notice.error('创建文件夹出错')
                 } else {
-                    console.log(currentDir + '文件夹【创建成功】');
+                    notice.success(currentDir + '文件夹【创建成功】')
                     mkdir(pos + 1, dirArr, _callback)
                 }
             })
         } else {
-            console.log(currentDir + '文件夹【已存在】');
+            notice.error(currentDir + '文件夹【已存在】')
             mkdir(pos + 1, dirArr, _callback)
         }
     })
@@ -82,14 +98,15 @@ function writeFile(dirPath, fileName, _callback) {
 function write(pos, fileArr, _callback) {
     var len = ext.length;
     if (pos >= len) {
-        console.log('文件【全部创建成功】')
+        notice.success('--------文件【全部创建成功】')
         _callback && _callback();
         return;
     }
     var fileNameNotes = fileArr[pos];
+
     switch (pos) {
         case 0:
-            var fileStr = fs.readFileSync(path.join('template', 'template.js'), 'utf-8');
+            var fileStr = fs.readFileSync(path.join('build', 'template.js'), 'utf-8');
             fileNameNotes = '// ' + fileNameNotes + '\n' + fileStr;
             break;
         case 1:
@@ -108,10 +125,11 @@ function write(pos, fileArr, _callback) {
         flag: 'wx'
     }, function(err) {
         if (err) {
-            console.error(fileArr[pos] + '【已存在】');
+            notice.error(fileArr[pos] + '【已存在】')
             write(pos + 1, fileArr, _callback)
             return
         }
+        notice.success(fileArr[pos] + '【创建成功】')
         write(pos + 1, fileArr, _callback)
     })
 }

@@ -1,0 +1,17 @@
+{
+  "name": "mina",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development node build/dev.js",
+    "create": "node build/create.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "colors": "^1.3.0"
+  }
+}
