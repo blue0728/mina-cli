@@ -43,7 +43,7 @@ function init() {
                                     notice.error(err)
                                     return
                                 }
-                                notice.success('项目创建成功: cd ' + line + ' & npm install')
+                                notice.success('项目创建成功: cd ' + line + ' && npm install')
                                 process.exit(0);
                             })
                         }
