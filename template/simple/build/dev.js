@@ -3,10 +3,10 @@ var config = require('./config');
 var path = require('path');
 var colors = require('colors');
 
-var projectPath = path.join(process.cwd(), 'dist');
+var projectPath = path.join(process.cwd(), 'src');
 
 callfile.execFile(`${config.path}/Contents/Resources/app.nw/bin/cli`, ['-o', projectPath], (err, stdout, stderr) => {
-    
+
     if (err) {
         console.log(('打开失败：\n' + err).red)
         return
