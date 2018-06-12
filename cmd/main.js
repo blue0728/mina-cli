@@ -37,7 +37,8 @@ function init() {
                             process.exit(0);
                         } else {
                             notice.success(line + '文件夹【创建成功】')
-                            copyFolder(path.join('template', 'simple'), line, function(err) {
+                            var srcDir = path.resolve(__dirname, '../template/simple')
+                            copyFolder(srcDir, line, function(err) {
                                 if (err) {
                                     notice.error(err)
                                     return
@@ -57,9 +58,7 @@ function init() {
 }
 
 var copyFolder = function(srcDir, tarDir, cb) {
-    console.log(path.join(process.cwd(), srcDir)
-    fs.readdir(path.join(process.cwd(), srcDir), function(err, files) {
-        console.log(files)
+    fs.readdir(srcDir, function(err, files) {
         var count = 0
         var checkEnd = function() {
             ++count == files.length && cb && cb()
