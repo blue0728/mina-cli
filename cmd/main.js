@@ -57,7 +57,7 @@ function init() {
 }
 
 var copyFolder = function(srcDir, tarDir, cb) {
-    console.log(srcDir)
+    console.log(path.join(process.cwd(), srcDir)
     fs.readdir(path.join(process.cwd(), srcDir), function(err, files) {
         console.log(files)
         var count = 0
