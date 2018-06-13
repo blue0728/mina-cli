@@ -6,9 +6,9 @@ var path = require('path')
 var notice = require('./notice')
 var readline = require('readline');
 var rl = readline.createInterface(process.stdin, process.stdout);
-
+var fileStr = fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf-8');
 program
-    .version('1.0.0')
+    .version(JSON.parse(fileStr).version)
     .option('-v, --version', '版本号')
     .option('-i, --init', '初始化项目')
     .action(function(res) {

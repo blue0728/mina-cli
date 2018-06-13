@@ -12,7 +12,7 @@ var fs = require('fs');
 var sep = path.sep; //系统目录分隔符
 var ext = ['js', 'json', 'wxml', 'wxss'];
 var rl = readline.createInterface(process.stdin, process.stdout);
-rl.setPrompt('输入路径(/pages/aa/bb/文件名)，输入Q退出>');
+rl.setPrompt('输入路径(例：/pages/home/home/文件名)，输入Q退出>');
 rl.prompt();
 
 rl.on('line', (line) => {
@@ -30,11 +30,11 @@ rl.on('line', (line) => {
 //创建
 function create(dirPath, _callback) {
     if (typeof dirPath === 'string') {
-        var path = dirPath;
-        if (path[0] === '/') {
-            path = path.substring(1); //去除路径前面的 /
+        var spath = dirPath;
+        if (spath[0] === '/') {
+            spath = spath.substring(1); //去除路径前面的 /
         }
-        var dirArr = path.split('/');
+        var dirArr = spath.split('/');
         dirArr.unshift('src'); //创建到src 目录下面
         var fileName = dirArr[dirArr.length - 1]; //取最后一个为文件名称
         dirArr.pop();
@@ -43,7 +43,7 @@ function create(dirPath, _callback) {
             if (!exists) {
                 mkdir(0, dirArr, function() {
                     notice.success('---------文件夹【全部创建完成】')
-                    writeFile(dirArr.join(sep), fileName, _callback)
+                    writeFile(dirArr.join(sep), spath, fileName, _callback)
                 })
             } else {
                 notice.error('文件夹【已存在】')
@@ -85,21 +85,21 @@ function mkdir(pos, dirArr, _callback) {
 }
 
 //创建文件
-function writeFile(dirPath, fileName, _callback) {
+function writeFile(dirPath, spath, fileName, _callback) {
     var len = ext.length;
     var fileArr = [];
     for (var i = 0; i < len; i++) {
         fileArr.push(path.join(dirPath, fileName + '.' + ext[i]));
     }
-    write(0, fileArr, _callback)
+    write(0, fileArr, spath, _callback)
 }
 
 //创建文件
-function write(pos, fileArr, _callback) {
+function write(pos, fileArr, spath, _callback) {
     var len = ext.length;
     if (pos >= len) {
         notice.success('--------文件【全部创建成功】')
-        _callback && _callback();
+        editAppjson(spath, _callback)
         return;
     }
     var fileNameNotes = fileArr[pos];
@@ -113,7 +113,7 @@ function write(pos, fileArr, _callback) {
             fileNameNotes = '{}'
             break;
         case 2:
-            fileNameNotes = '<!--' + fileNameNotes + '-->'
+            fileNameNotes = '<!--' + fileNameNotes + '-->\n<view>' + fileNameNotes + '</view>'
             break;
         case 3:
             fileNameNotes = '/* ' + fileNameNotes + ' */'
@@ -126,10 +126,32 @@ function write(pos, fileArr, _callback) {
     }, function(err) {
         if (err) {
             notice.error(fileArr[pos] + '【已存在】')
-            write(pos + 1, fileArr, _callback)
+            write(pos + 1, fileArr, spath, _callback)
             return
         }
         notice.success(fileArr[pos] + '【创建成功】')
-        write(pos + 1, fileArr, _callback)
+        write(pos + 1, fileArr, spath, _callback)
+    })
+}
+
+//增加app.json pages 路径配置
+function editAppjson(dirPath, _callback) {
+    var fileStr = path.join('src', 'app.json')
+    fs.readFile(fileStr, 'utf-8', function(err, res) {
+        if (err) {
+            notice.error(fileStr + '【读取失败】')
+        }
+        var json = JSON.parse(res);
+        if (json.pages.indexOf(dirPath) == -1) {
+            json.pages.push(dirPath)
+        }
+        //然后再把数据写进去
+        fs.writeFile(fileStr, JSON.stringify(json), 'utf-8', function(err) {
+            if (err) {
+                notice.error(fileStr + '【更新失败】')
+            }
+            notice.success(fileStr + '【更新成功】')
+            _callback && _callback();
+        })
     })
 }
