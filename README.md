@@ -4,6 +4,9 @@
 # install
 ```
 npm install mina-cli2 -g  全局安装 mina-cli2
+```
+
+```
 mina -v   版本号
 mina init   初始化项目
 ```
