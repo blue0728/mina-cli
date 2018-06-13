@@ -9,54 +9,44 @@ var rl = readline.createInterface(process.stdin, process.stdout);
 var fileStr = fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf-8');
 program
     .version(JSON.parse(fileStr).version)
-    .option('-v, --version', '版本号')
-    .option('-i, --init', '初始化项目')
-    .action(function(res) {
-        notice.success('开始初始化项目')
-        init()
-    })
+    .option('create, --chdir <path>', '创建项目')
     .parse(process.argv);
 
 
+if (program.chdir != '') {
+    init();
+}
+
 function init() {
-
-    rl.setPrompt('输入项目名称，输入Q退出>');
-    rl.prompt();
-
-    rl.on('line', (line) => {
-        if (line.trim().toUpperCase() === 'Q') {
-            process.exit(0);
-        } else {
-            //判断创建文件夹
-            fs.exists(line, function(exists) {
-                if (!exists) {
-                    fs.mkdir(line, function(err) {
-                        if (err) {
-                            notice.error('创建文件夹出错')
-                            process.exit(0);
-                        } else {
-                            notice.success(line + '文件夹【创建成功】')
-                            var srcDir = path.resolve(__dirname, '../template/simple')
-                            copyFolder(srcDir, line, function(err) {
-                                if (err) {
-                                    notice.error(err)
-                                    return
-                                }
-                                notice.success('项目创建成功!')
-                                notice.success('1.安装: cd ' + line + ' && npm install');
-                                notice.success('2.运行: npm run dev')
-                                notice.success('3.创建页面: npm run create')
-                                process.exit(0);
-                            })
-                        }
-                    })
-                } else {
-                    notice.error(line + '文件夹【已存在】')
+    var chdir = program.chdir;
+    //判断创建文件夹
+    fs.exists(chdir, function(exists) {
+        if (!exists) {
+            fs.mkdir(chdir, function(err) {
+                if (err) {
+                    notice.error('创建文件夹出错')
                     process.exit(0);
+                } else {
+                    notice.success(chdir + '文件夹【创建成功】')
+                    var srcDir = path.resolve(__dirname, '../template/simple')
+                    copyFolder(srcDir, chdir, function(err) {
+                        if (err) {
+                            notice.error(err)
+                            return
+                        }
+                        notice.success('项目创建成功!')
+                        notice.success('1.安装: cd ' + chdir + ' && npm install');
+                        notice.success('2.运行: npm run dev')
+                        notice.success('3.创建页面: npm run create')
+                        process.exit(0);
+                    })
                 }
             })
+        } else {
+            notice.error(chdir + '文件夹【已存在】')
+            process.exit(0);
         }
-    });
+    })
 }
 
 var copyFolder = function(srcDir, tarDir, cb) {
