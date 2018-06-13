@@ -8,7 +8,7 @@ npm install mina-cli2 -g  全局安装 mina-cli2
 
 ```
 mina -v   版本号
-mina init   初始化项目
+mina create [项目名称]  创建项目
 ```
 ![install](http://p7inyv4vd.bkt.clouddn.com/1)
 
