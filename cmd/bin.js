@@ -19,6 +19,10 @@ program
 program.parse(process.argv)
 
 let templateName = program.init; //模板名称路径
+
+if (!templateName) {
+    return
+}
 let projectName = program.args[0]; //项目名称
 let tmp = path.join(process.cwd(), projectName)
 
