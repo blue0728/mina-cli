@@ -9,27 +9,35 @@ const inquirer = require('inquirer')
 const ora = require('ora')
 const logger = require('./logger')
 const templatePre = 'mina-template'
+const defaultTemplatName = templatePre + '-simple'
 let userName = 'blue0728'
 const sep = path.sep; //系统目录分隔符
+let templateName = '',
+    projectName = '';
+let tmp = '';
 
 program
     .version(require('../package').version)
     .option('init, <template-name>', '创建项目')
+    .action(function(option) {
+        init()
+    })
 
 program.parse(process.argv)
 
-let templateName = program.init; //模板名称路径
 
-if (!templateName) {
-    return
-}
-let projectName = program.args[0]; //项目名称
-let tmp = path.join(process.cwd(), projectName)
+function init() {
+    templateName = program.init; //模板名称路径
+    projectName = program.args[0]; //项目名称
+    if (templateName && projectName) {
+        tmp = path.join(process.cwd(), projectName)
 
-if (projectName != undefined) {
-    checkTemplateName();
-} else {
-    logger.error('请输入项目目录：mina init ' + templateName + ' [项目目录]')
+        if (projectName != undefined) {
+            checkTemplateName();
+        } else {
+            logger.error('请输入项目目录：mina init ' + templateName + ' [项目目录]')
+        }
+    }
 }
 
 
@@ -38,6 +46,10 @@ function checkTemplateName() {
     let templateNameArr = templateName.split('/');
     if (templateNameArr.length === 1) {
         templateName = templatePre + '-' + templateName
+        if (templateName != defaultTemplatName) {
+            logger.error('默认模板为' + defaultTemplatName + ' [mina init simple '+ projectName +']')
+            return
+        }
     } else {
         userName = templateNameArr[0]
         templateName = templateNameArr[1]
@@ -67,9 +79,11 @@ function writeProjectInfo() {
 
 //下载模板
 function downLoadTemplate(answers) {
+
     const templaePath = path.join(userName, templateName)
     const spinner = ora('正在下载模板...')
     spinner.start()
+
     download(templaePath, tmp, function(err) {
         if (err) {
             spinner.fail()
@@ -89,7 +103,7 @@ function downLoadTemplate(answers) {
                 fs.writeFileSync(projectConfigFile, projectConfigFileResutl)
                 logger.success('项目' + projectName + '初始化成功')
             } else {
-                logger.success('项目' + projectName + '初始化失败')
+                logger.error('项目' + projectName + '初始化失败')
             }
         }
     })
