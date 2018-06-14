@@ -7,14 +7,8 @@ npm install mina-cli2 -g  全局安装 mina-cli2
 ```
 
 ```
-mina -v   版本号
-mina create [项目名称]  创建项目
+mina -V   版本号
+mina init simple test  //simple  默认模板  test  目录名称
 ```
-![install](http://p7inyv4vd.bkt.clouddn.com/1)
 
-```
-cd test && npm install   安装项目
-npm run dev    运行项目
-npm run create   新建页面
-```
-![install2](http://p7inyv4vd.bkt.clouddn.com/2)
+
